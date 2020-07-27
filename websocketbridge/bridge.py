@@ -39,6 +39,14 @@ class Bridge(WebSocket):
 		logging.info(f"Closed connection with {self.address}")
 		pass
 
+def runserver(socket_port, websocket_port):
+
+    SOCKET_PORT = socket_port
+    WEBSOCKET_PORT = websocket_port
+
+    server = WebSocketServer('', WEBSOCKET_PORT, Bridge)
+    server.serve_forever()
+
 if __name__ == "__main__":
 
     import sys
@@ -56,12 +64,11 @@ if __name__ == "__main__":
     if len(args) != 3: # program name, socket port, websocket port
         raise Exception("Two arguments are required (socket port, websocket port)")
     try:
-        SOCKET_PORT = int(args[1])
-        WEBSOCKET_PORT = int(args[2])
+        socket_port = int(args[1])
+        websocket_port = int(args[2])
     except ValueError:
         raise ValueError("The arguments must be valid integers")
 
     logging.info("Starting server...")
 
-    server = WebSocketServer('', WEBSOCKET_PORT, Bridge)
-    server.serve_forever()
+    runserver(socket_port=socket_port, websocket_port=websocket_port)
